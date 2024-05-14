@@ -6,57 +6,59 @@ class Main
 {
     public static void main(String args[])
     {
-        try{
-            //Opens the named file
-            //Name the file you want to read from here
-            FileInputStream readIn = new FileInputStream("camPi1.log");
-            // Get the object of DataInputStream
-            DataInputStream in = new DataInputStream(readIn);
-            //Buffer for the input
-            BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
-
-            //Name the file you want to write pings to
-            FileWriter outPing = new FileWriter("newLog.txt");
-            BufferedWriter pingLogging = new BufferedWriter(outPing);
-
-            //Name the file you want to write packet loss to
-            FileWriter outLoss = new FileWriter("newLog2.txt");
-            BufferedWriter lossLogging = new BufferedWriter(outLoss);
-            String txtLine;
-            //Read File Line By Line
-            String matchLine="rtt";
-            String matchLine2="packet loss,";
-            String dataPoints;
-            String dataPoints2;
-            String dataLoss;
-            while ((txtLine = bufferLine.readLine()) != null)   {
-                // Print the content on the console
-                if (txtLine.toLowerCase().contains(matchLine)){
-                    dataPoints = txtLine.substring(23, 49);
-                    String[] data = dataPoints.split("/");
-                    for(int x = 0; x < data.length; x++ ) {
-                        pingLogging.write(data[x] + ",");
-
-                    }
-                    pingLogging.write("\n");
-                }
-                if (txtLine.toLowerCase().contains(matchLine2)){
-                    dataPoints2 = txtLine.substring(39);
-                    dataLoss = dataPoints2.substring(0, dataPoints2.indexOf(" "));
-
-                    lossLogging.write(dataLoss + ",\n");
-
-                }
-
-            }
-            pingLogging.close();
-            lossLogging.close();
-            //Close the input stream
-            in.close();
-        }catch (Exception e){//Catch exception if any
-            System.err.println("Error: " + e.getMessage());
-        }
+        Ping_Parase("camPi1.log", "newLog.txt", "newLog2.txt");
     }
 
+    public static void Ping_Parase(String toRead, String pingWrite, String packetWrite){
+    try{
+        //Opens the named file
+        //Name the file you want to read from here
+        FileInputStream readIn = new FileInputStream(toRead);
+        // Get the object of DataInputStream
+        DataInputStream in = new DataInputStream(readIn);
+        //Buffer for the input
+        BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
 
+        //Name the file you want to write pings to
+        FileWriter outPing = new FileWriter(pingWrite);
+        BufferedWriter pingLogging = new BufferedWriter(outPing);
+
+        //Name the file you want to write packet loss to
+        FileWriter outLoss = new FileWriter(packetWrite);
+        BufferedWriter lossLogging = new BufferedWriter(outLoss);
+        String txtLine;
+        //Read File Line By Line
+        String matchLine="rtt";
+        String matchLine2="packet loss,";
+        String dataPoints;
+        String dataPoints2;
+        String dataLoss;
+        while ((txtLine = bufferLine.readLine()) != null)   {
+            // Print the content on the console
+            if (txtLine.toLowerCase().contains(matchLine)){
+                dataPoints = txtLine.substring(23, 49);
+                String[] data = dataPoints.split("/");
+                for(int x = 0; x < data.length; x++ ) {
+                    pingLogging.write(data[x] + ",");
+
+                }
+                pingLogging.write("\n");
+            }
+            if (txtLine.toLowerCase().contains(matchLine2)){
+                dataPoints2 = txtLine.substring(39);
+                dataLoss = dataPoints2.substring(0, dataPoints2.indexOf(" "));
+
+                lossLogging.write(dataLoss + ",\n");
+
+            }
+
+        }
+        pingLogging.close();
+        lossLogging.close();
+        //Close the input stream
+        in.close();
+    }catch (Exception e){//Catch exception if any
+        System.err.println("Error: " + e.getMessage());
+    }
+}
 }
