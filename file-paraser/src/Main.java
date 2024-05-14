@@ -6,7 +6,10 @@ class Main
 {
     public static void main(String args[])
     {
-        Ping_Parase("camPi1.log", "newLog.txt", "newLog2.txt");
+        //Ping_Parase("camPi1.log", "newLog.txt", "newLog2.txt");
+        //Ping_Parase("ethzPi1.log", "ethzPiLog.txt", "ethzPacketLog.txt");
+        //Median_Parase("camPi1.log", "newLog3.txt");
+        TraceRoute_Parase("camTrace1.log", "newLog4.txt");
     }
 
     public static void Ping_Parase(String toRead, String pingWrite, String packetWrite){
@@ -61,4 +64,91 @@ class Main
         System.err.println("Error: " + e.getMessage());
     }
 }
+
+    public static void Median_Parase(String toRead, String meanWrite){
+        try{
+            //Opens the named file
+            FileInputStream readIn = new FileInputStream(toRead);
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(readIn);
+            //Buffer for the input
+            BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
+
+            FileWriter outMean = new FileWriter(meanWrite);
+            BufferedWriter meanLogging = new BufferedWriter(outMean);
+
+            String txtLine;
+            //Checks to see if line matches data being looked for
+            String matchLine= "time=";
+            String matchLine2= "packets transmitted";
+            String dataPoints;
+            String writeMean;
+            //Read File Line By Line
+            while ((txtLine = bufferLine.readLine()) != null)   {
+                // Print the content on the console
+                if (txtLine.toLowerCase().contains(matchLine)){
+                    dataPoints = txtLine.substring(txtLine.indexOf(matchLine));
+
+                    writeMean = dataPoints.substring(5,9);
+
+                    meanLogging.write(writeMean+",");
+
+                }
+                if (txtLine.toLowerCase().contains(matchLine2)){
+                    meanLogging.write("\n");
+                }
+
+
+            }
+            meanLogging.close();
+            //Close the input stream
+            in.close();
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+}
+
+    public static void TraceRoute_Parase(String toRead, String traceWrite){
+        try{
+            //Opens the named file
+            FileInputStream readIn = new FileInputStream(toRead);
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(readIn);
+            //Buffer for the input
+            BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
+
+            FileWriter outTrace = new FileWriter(traceWrite);
+            BufferedWriter traceLogging = new BufferedWriter(outTrace);
+
+            String txtLine;
+            //Checks to see if line matches data being looked for
+            String matchLine= "traceroute to";
+
+            String dataPoints;
+
+            //Read File Line By Line
+            while ((txtLine = bufferLine.readLine()) != null)   {
+                // Print the content on the console
+                if (txtLine.toLowerCase().contains(matchLine) == false){
+                    if (txtLine.toLowerCase().contains("* * *")) {
+                        traceLogging.write(txtLine + ", ");
+                    }
+                    else{
+                        dataPoints = txtLine.substring(0, txtLine.indexOf(")") + 1);
+                        traceLogging.write(dataPoints + ", ");
+                    }
+                }
+                if (txtLine.toLowerCase().contains(matchLine)){
+                    traceLogging.write("\n");
+                }
+
+
+            }
+            traceLogging.close();
+            //Close the input stream
+            in.close();
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 }
