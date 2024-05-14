@@ -8,14 +8,20 @@ class Main
     {
         try{
             //Opens the named file
+            //Name the file you want to read from here
             FileInputStream readIn = new FileInputStream("camPi1.log");
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(readIn);
             //Buffer for the input
             BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
 
-            FileWriter outWriter = new FileWriter("newLog.txt");
-            //CSVWriter printWriter = new PrintWriter(outWriter);
+            //Name the file you want to write pings to
+            FileWriter outPing = new FileWriter("newLog.txt");
+            BufferedWriter pingLogging = new BufferedWriter(outPing);
+
+            //Name the file you want to write packet loss to
+            FileWriter outLoss = new FileWriter("newLog2.txt");
+            BufferedWriter lossLogging = new BufferedWriter(outLoss);
             String txtLine;
             //Read File Line By Line
             String matchLine="rtt";
@@ -28,7 +34,7 @@ class Main
                     dataPoints = txtLine.substring(23, 49);
                     String[] data = dataPoints.split("/");
                     for(int x = 0; x < data.length; x++ ) {
-                        System.out.println(data[x] + ",");
+                        pingLogging.write(data[x] + ",");
 
                     }
                 }
@@ -36,12 +42,13 @@ class Main
                     dataPoints2 = txtLine.substring(39);
 
 
-                        System.out.println(dataPoints2 + ",");
+                    lossLogging.write(dataPoints2 + ",");
 
                 }
 
             }
-            //printWriter.close();
+            pingLogging.close();
+            lossLogging.close();
             //Close the input stream
             in.close();
         }catch (Exception e){//Catch exception if any
