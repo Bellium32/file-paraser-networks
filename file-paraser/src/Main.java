@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.Arrays;
+
 
 
 class Main
@@ -28,6 +28,7 @@ class Main
             String matchLine2="packet loss,";
             String dataPoints;
             String dataPoints2;
+            String dataLoss;
             while ((txtLine = bufferLine.readLine()) != null)   {
                 // Print the content on the console
                 if (txtLine.toLowerCase().contains(matchLine)){
@@ -37,12 +38,13 @@ class Main
                         pingLogging.write(data[x] + ",");
 
                     }
+                    pingLogging.write("\n");
                 }
                 if (txtLine.toLowerCase().contains(matchLine2)){
                     dataPoints2 = txtLine.substring(39);
+                    dataLoss = dataPoints2.substring(0, dataPoints2.indexOf(" "));
 
-
-                    lossLogging.write(dataPoints2 + ",");
+                    lossLogging.write(dataLoss + ",\n");
 
                 }
 
