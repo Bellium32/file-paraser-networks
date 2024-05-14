@@ -9,7 +9,8 @@ class Main
         //Ping_Parase("camPi1.log", "newLog.txt", "newLog2.txt");
         //Ping_Parase("ethzPi1.log", "ethzPiLog.txt", "ethzPacketLog.txt");
         //Median_Parase("camPi1.log", "newLog3.txt");
-        TraceRoute_Parase("camTrace1.log", "newLog4.txt");
+        //TraceRoute_Parase("camTrace1.log", "newLog4.txt");
+        TPut_Parase("bigFileDown1.log", "newLog5.txt");
     }
 
     public static void Ping_Parase(String toRead, String pingWrite, String packetWrite){
@@ -151,4 +152,42 @@ class Main
             System.err.println("Error: " + e.getMessage());
         }
     }
+
+    public static void TPut_Parase(String toRead, String tPutWrite){
+        try{
+            //Opens the named file
+            FileInputStream readIn = new FileInputStream(toRead);
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(readIn);
+            //Buffer for the input
+            BufferedReader bufferLine = new BufferedReader(new InputStreamReader(in));
+
+            FileWriter writeTPut = new FileWriter(tPutWrite);
+            BufferedWriter tPutLogging = new BufferedWriter(writeTPut);
+
+            String txtLine;
+            //Checks to see if line matches data being looked for
+            String matchLine= "written to stdout";
+
+            String dataPoints;
+            //Read File Line By Line
+            while ((txtLine = bufferLine.readLine()) != null)   {
+                // Print the content on the console
+                if (txtLine.toLowerCase().contains(matchLine)){
+                    //dataPoints = txtLine.substring(txtLine.indexOf("(") ,txtLine.indexOf(")") + 1);
+                    dataPoints = txtLine.substring(txtLine.indexOf("(") + 1,txtLine.indexOf("(") + 5);
+                    tPutLogging.write(dataPoints+",\n");
+
+                }
+
+
+            }
+            tPutLogging.close();
+            //Close the input stream
+            in.close();
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
 }
